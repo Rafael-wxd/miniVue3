@@ -1,6 +1,6 @@
 import { PublicInstanceProxyHandlers } from './componentPublicInstance'
 import { initProps } from './componentProps'
-import { shallowReadonly } from '../reactive';
+import { shallowReadonly } from '../reactive/index';
 import { emit } from './componentEmit';
 import { initSlots } from './componentSlots'
 import { proxyRefs } from '../reactive/src/ref';
@@ -12,6 +12,7 @@ export function createComponentInstance (vnode, parent) {
     setupState: {},
     props: {},
     slots: {},
+    next: null,
     provides: parent ? parent.provides : {},
     parent,
     isMounted: false,

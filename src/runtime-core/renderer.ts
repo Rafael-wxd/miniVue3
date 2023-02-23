@@ -45,7 +45,38 @@ export function createRenderer (options) {
   }
 
   function processComponent(n1, n2, container, parentComponent, anchor) {
-    mountComponent(n2, container, parentComponent, anchor);
+    if (!n1) {
+      mountComponent(n2, container, parentComponent, anchor);
+    } else {
+      updateComponent(n1, n2);
+    }
+  }
+
+  function shouldUpdateComponent(prevVNode, nextVNode) {
+    const { props: prevProps } = prevVNode;
+    const { props: nextProps } = nextVNode;
+  
+    for (const key in nextProps) {
+      if (nextProps[key] !== prevProps[key]) {
+        return true;
+      }
+    }
+  
+    return false;
+  }
+  
+
+  function updateComponent (n1, n2) {
+    const instance = (n2.component = n1.component)
+
+    if (shouldUpdateComponent(n1, n2)) {
+      instance.next = n2;
+      instance.update()
+    } else {
+      n2.el = n1.el;
+      instance.vnode = n2;
+    }
+
   }
   
   function processElement (n1, n2, container, parentComponent, anchor) {
@@ -253,7 +284,7 @@ export function createRenderer (options) {
   }
   
   function mountComponent(vnode, container, parentComponent, anchor) {
-    const instance = createComponentInstance(vnode, parentComponent);
+    const instance = (vnode.component = createComponentInstance(vnode, parentComponent));
   
     setupComponent(instance);
     setupRenderEffect(instance, container, anchor);
@@ -289,28 +320,38 @@ export function createRenderer (options) {
   }
   
   function setupRenderEffect (instance, container, anchor) {
-    effect(() => {
-      const { proxy } = instance;
-
-      const subTree = instance.render.call(proxy);
-
+    instance.update =  effect(() => {
       if (!instance.isMounted) {
+        const { proxy } = instance;
+        const subTree = (instance.subTree = instance.render.call(proxy));
         patch(null, subTree, container, instance, anchor);
-
         instance.isMounted = true;
       } else {
-        const prevSubTree = instance.subTree;
+        const { next, vnode } = instance;
+        if (next) {
+          next.el = vnode.el;
 
+          updateComponentPreRender(instance, next);
+        }
+
+        const { proxy } = instance;
+        const subTree = instance.render.call(proxy);
+        const prevSubTree = instance.subTree;
+        instance.subTree = subTree;
         patch(prevSubTree, subTree, container, instance, anchor);
       }
-
-      instance.subTree = subTree;
     })
   }
 
   return {
     createApp: createAppAPI(render)
   }
+}
+
+function updateComponentPreRender (instance, nextVNode) {
+  instance.vnode = nextVNode;
+  instance.next = null;
+  instance.props = nextVNode.props;
 }
 
 function getSequence(arr) {
