@@ -8,32 +8,33 @@ export {
   isReactive,
   isReadonly,
   isProxy
-} from './reactive'
+} from './src/reactive'
 
 export {
   ITERATE_KEY,
   TrackOpTypes,
   TriggerType
-} from './baseHandlers'
+} from './src/baseHandlers'
 
 export {
   effect,
   stop,
   EffectScope,
   onScopeDispose
-} from './effect'
+} from './src/effect'
 
 export {
   ref,
   isRef,
   toRef,
-  toRefs
-} from './ref'
+  toRefs,
+  proxyRefs
+} from './src/ref'
 
 export {
   computed
-} from './computed'
+} from './src/computed'
 
 export {
   deferredComputed
-} from './deferredComputed'
+} from './src/deferredComputed'

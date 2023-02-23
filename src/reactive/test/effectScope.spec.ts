@@ -7,7 +7,7 @@ import {
   // ref,
   // computed,
   // ComputedRef
-} from '../src/index'
+} from '../index'
 
 describe('reactivity/effect/scope', () => {
   it('should run', () => {

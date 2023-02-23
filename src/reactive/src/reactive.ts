@@ -119,5 +119,5 @@ export function isProxy (observable) {
 }
 
 export function isShallow (observable) {
-  return !!observable[ReactiveFlags.IS_SHALLOW];
+  return !!(observable && observable[ReactiveFlags.IS_SHALLOW]);
 }

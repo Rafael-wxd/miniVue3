@@ -1,4 +1,4 @@
-import { reactive, effect, toRaw, isReactive } from '../../src/index'
+import { reactive, effect, toRaw, isReactive } from '../../index'
 
 describe('reactivity/collections', () => {
   function coverCollectionFn(collection: Map<any, any>, fnName: string) {

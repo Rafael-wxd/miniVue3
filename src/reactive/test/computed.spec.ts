@@ -8,7 +8,7 @@ import {
   TrackOpTypes,
   ITERATE_KEY,
   TriggerType
-} from '../src/index'
+} from '../index'
 
 describe('reactivity/computed', () => {
   it('should return updated value', () => {

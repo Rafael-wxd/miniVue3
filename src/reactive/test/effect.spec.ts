@@ -11,7 +11,7 @@ import {
   shallowReactive,
   readonly,
   // ReactiveEffectRunner
-} from '../src/index'
+} from '../index'
 // import { ITERATE_KEY } from '../src/effect'
 
 describe('reactivity/effect', () => {

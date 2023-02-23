@@ -1,4 +1,4 @@
-import { computed, deferredComputed, effect, ref } from '../src/index'
+import { computed, deferredComputed, effect, ref } from '../index'
 
 describe('deferred computed', () => {
   const tick = Promise.resolve()

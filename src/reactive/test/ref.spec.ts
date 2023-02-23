@@ -6,9 +6,9 @@ import {
   toRef,
   toRefs,
   isReactive
-} from '../src/index'
+} from '../index'
 // import { computed } from '@vue/runtime-dom'
-import { shallowRef, unref, customRef, triggerRef } from '../src/ref'
+import { shallowRef, unRef, customRef, triggerRef } from '../src/ref'
 import { isShallow } from '../src/reactive'
 
 describe('reactivity/ref', () => {
@@ -190,8 +190,8 @@ describe('reactivity/ref', () => {
   })
 
   test('unref', () => {
-    expect(unref(1)).toBe(1)
-    expect(unref(ref(1))).toBe(1)
+    expect(unRef(1)).toBe(1)
+    expect(unRef(ref(1))).toBe(1)
   })
 
   test('shallowRef', () => {

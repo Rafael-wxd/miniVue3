@@ -34,3 +34,21 @@ export const toTypeString = (value) => objectToString.call(value)
 export const toRawType = (value) => {
   return toTypeString(value).slice(8, -1)
 }
+
+export const hasOwn = (val, key) => Object.prototype.hasOwnProperty.call(val, key);
+
+export const camelize = (str: string) => {
+  return str.replace(/-(\w)/g, (_, c: string) => {
+    return c ? c.toUpperCase() : "";
+  });
+}
+
+const capitalize = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export const toHandlerKey = (str: string) => {
+  return str ? "on" + capitalize(str) : "";
+}
+
+export const EMPTY_OBJ = {};
