@@ -2,8 +2,9 @@ import { createComponentInstance, setupComponent } from "./component";
 import { ShapeFlags } from "../shared/src/ShapeFlags";
 import { Fragment, Text } from "./vnode";
 import { createAppAPI } from './createApp'
-import { effect } from "../reactive";
-import { EMPTY_OBJ } from "../shared/src";
+import { effect } from "../reactive/index";
+import { EMPTY_OBJ } from "../shared/src/index";
+import { queueJobs } from "./scheduler";
 
 // 创建渲染器
 export function createRenderer (options) {
@@ -67,16 +68,15 @@ export function createRenderer (options) {
   
 
   function updateComponent (n1, n2) {
-    const instance = (n2.component = n1.component)
+    const instance = (n2.component = n1.component);
 
     if (shouldUpdateComponent(n1, n2)) {
       instance.next = n2;
-      instance.update()
+      instance.update();
     } else {
       n2.el = n1.el;
       instance.vnode = n2;
     }
-
   }
   
   function processElement (n1, n2, container, parentComponent, anchor) {
@@ -88,6 +88,9 @@ export function createRenderer (options) {
   }
 
   function patchElement (n1, n2, container, parentComponent, anchor) {
+    console.log('n1', n1)
+    console.log('n2', n2)
+
     const oldProps = n1.props || EMPTY_OBJ;
     const newProps = n2.props || EMPTY_OBJ;
 
@@ -330,7 +333,6 @@ export function createRenderer (options) {
         const { next, vnode } = instance;
         if (next) {
           next.el = vnode.el;
-
           updateComponentPreRender(instance, next);
         }
 
@@ -340,6 +342,10 @@ export function createRenderer (options) {
         instance.subTree = subTree;
         patch(prevSubTree, subTree, container, instance, anchor);
       }
+    }, {
+      scheduler () {
+        queueJobs(instance.update);
+      }
     })
   }
 
@@ -348,10 +354,11 @@ export function createRenderer (options) {
   }
 }
 
-function updateComponentPreRender (instance, nextVNode) {
-  instance.vnode = nextVNode;
+function updateComponentPreRender (instance, nextVnode) {
+  instance.vnode = nextVnode;
   instance.next = null;
-  instance.props = nextVNode.props;
+
+  instance.props = nextVnode.props;
 }
 
 function getSequence(arr) {
