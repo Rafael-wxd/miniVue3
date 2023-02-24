@@ -233,7 +233,9 @@ export function createRenderer (options) {
         }
       }
 
-      console.log(newIndexToOldIndexMap)
+      const increasingNewIndexSequence = getSequence(newIndexToOldIndexMap);
+      let j = increasingNewIndexSequence.length - 1;
+
       for (let i = toBePatched - 1; i >= 0; i--) {
         const index = s2 + i;
         const anchor = index + 1 < l2 ? c2[index + 1].el : null;
@@ -241,7 +243,11 @@ export function createRenderer (options) {
         if (newIndexToOldIndexMap[i] === 0) {
           patch(null, c2[index], container, parentComponent, anchor);
         } else {
-          hostInsert(c2[index].el, container, anchor);
+          if (j < 0 || i !== increasingNewIndexSequence[j]) {
+            hostInsert(c2[index].el, container, anchor);
+          } else {
+            j--;
+          }
         }
       }
     }
@@ -361,7 +367,7 @@ function updateComponentPreRender (instance, nextVnode) {
   instance.props = nextVnode.props;
 }
 
-function getSequence(arr) {
+function getSequence (arr) {
   const p = arr.slice();
   const result = [0];
   let i, j, u, v, c;
